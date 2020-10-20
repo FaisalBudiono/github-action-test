@@ -1,4 +1,7 @@
 {
+    "name": "faisalbudiono/github-action-test",
+    "description": "This repository is used to test the github action",
+    "license": "proprietary",
     "require-dev": {
         "phpunit/phpunit": "^9"
     },
