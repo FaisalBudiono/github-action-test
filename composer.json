@@ -6,5 +6,9 @@
         "psr-4": {
             "App\\": "app/"
         }
+    },
+    "scripts": {
+        "test": "phpunit --bootstrap vendor/autoload.php tests",
+        "test-v": "phpunit --bootstrap vendor/autoload.php --testdox tests"
     }
 }
