@@ -14,3 +14,4 @@ jobs:
           ${{ toJSON(github.event) }}
           EOF
       - run: cat something.txt
+      - run: echo ${{ github.event.number }}
