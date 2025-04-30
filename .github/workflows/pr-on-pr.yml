@@ -1,0 +1,108 @@
+name: Auto PR on PR
+
+on:
+  pull_request:
+    branches:
+      - auto-pr/master
+
+env:
+  REMOVED_LABEL: "invalid"
+  ADDED_LABEL: "bug"
+  AUTO_PR_BRANCH: "auto-pr/staging"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        id: pr-info
+        with:
+          script: |
+            const res = await github.rest.pulls.get({
+              pull_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            })
+            const labels = res.data.labels.map((l) => l.name)
+              .filter((l) => l !== "${{ env.REMOVED_LABEL }}")
+              .filter((l) => l !== "")
+
+            return {
+              number: res.data.number,
+              title: res.data.title,
+              body: res.data.body,
+              head: res.data.head.ref,
+              base: res.data.base.ref,
+              etc: res,
+              labels,
+            }
+      - run: |
+          cat > script.txt<< EOF
+          ${{ fromJSON(toJSON(steps.pr-info.outputs.result)) }}
+          EOF
+      - run: cat script.txt
+      # - run: |
+      #     echo ${{ fromJSON(steps.pr-info.outputs.result).body }}
+      #     echo ${{ fromJSON(steps.pr-info.outputs.result).title }}
+
+      - name: Create staging PR
+        uses: actions/github-script@v7
+        id: create-stg
+        with:
+          script: |
+            const prInfo = ${{ steps.pr-info.outputs.result }}
+
+            const insertOrUpdate = async () => {
+              const stagingPRs = await github.rest.pulls.list({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: "open",
+                head: prInfo.head,
+                base: "${{ env.AUTO_PR_BRANCH }}",
+              });
+
+              const body = `${prInfo.body}\n\n---\n\nTest for: #${prInfo.number}`
+
+              if (stagingPRs.data.length === 0) {
+                const createdPR = await github.rest.pulls.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: prInfo.title,
+                  base: "${{ env.AUTO_PR_BRANCH }}",
+                  head: prInfo.head,
+                  body,
+                });
+
+                return createdPR.data.number
+              }
+
+              const prNumber = stagingPRs.data[0].number
+
+              await github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: prInfo.title,
+                pull_number: prNumber,
+                body,
+              });
+
+              return prNumber
+            }
+
+            const labels = ["${{ env.ADDED_LABEL }}", ...prInfo.labels].filter((l) => l !== "")
+
+            const prNumber = await insertOrUpdate()
+
+            const resLabel = await github.rest.issues.setLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              labels,
+            });
+
+            return {resLabel}
+      - run: |
+          cat > script.txt<< EOF
+          ${{ fromJSON(toJSON(steps.create-stg.outputs.result)) }}
+          EOF
+      - run: cat script.txt
