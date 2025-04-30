@@ -1,0 +1,25 @@
+{
+  "name": "github-action",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FaisalBudiono/github-action-test.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FaisalBudiono/github-action-test/issues"
+  },
+  "homepage": "https://github.com/FaisalBudiono/github-action-test#readme",
+  "dependencies": {
+    "@octokit/rest": "^21.1.1"
+  }
+}
