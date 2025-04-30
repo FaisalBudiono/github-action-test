@@ -47,23 +47,31 @@ jobs:
           script: |
             const prInfo = ${{ steps.pr-info.outputs.result }}
 
-            const res = await github.rest.pulls.create({
+            const res = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: prInfo.title,
-              body: `${prInfo.body}\n\n---\n\nTest for: #${prInfo.number}`,
-              base: "auto-pr/staging",
+              state: "open",
               head: prInfo.head,
+              base: "auto-pr/staging",
             });
+
+            # const res = await github.rest.pulls.create({
+            #   owner: context.repo.owner,
+            #   repo: context.repo.repo,
+            #   title: prInfo.title,
+            #   body: `${prInfo.body}\n\n---\n\nTest for: #${prInfo.number}`,
+            #   base: "auto-pr/staging",
+            #   head: prInfo.head,
+            # });
 
             const labels = ["bug", ...prInfo.labels]
 
-            const resLabel = await github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: res.data.number,
-              labels,
-            });
+            # const resLabel = await github.rest.issues.addLabels({
+            #   owner: context.repo.owner,
+            #   repo: context.repo.repo,
+            #   issue_number: res.data.number,
+            #   labels,
+            # });
 
             return {res, resLabel}
       - run: |
@@ -92,7 +100,16 @@ jobs:
       #         head: prInfo.head,
       #       });
       #
-      #       return res
+      #       const labels = ["bug", ...prInfo.labels]
+      #
+      #       const resLabel = await github.rest.issues.addLabels({
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         issue_number: res.data.number,
+      #         labels,
+      #       });
+      #
+      #       return {res, resLabel}
       # - run: |
       #     cat > script.txt<< EOF
       #     ${{ fromJSON(toJSON(steps.update-stg.outputs.result)) }}
