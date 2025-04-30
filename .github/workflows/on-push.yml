@@ -9,4 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: echo `${{ toJSON(github.event) }}`
+      - run: |
+          cat >> something.txt<< EOF ${{ toJSON(github.event) }}
+          EOF
+      - run: cat something.txt
