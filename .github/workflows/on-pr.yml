@@ -39,7 +39,7 @@ jobs:
         with:
           retries: 3
           script: |
-            const kuda = "${{ github.workspace }}"
+            const kuda = "${{ steps.pr-info.outputs.result }}"
 
             return {
               asd: kuda,
