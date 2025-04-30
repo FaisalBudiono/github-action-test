@@ -43,7 +43,7 @@ jobs:
           script: |
             const prInfo = ${{ steps.pr-info.outputs.result }}
 
-            const res = await okto.rest.pulls.create({
+            const res = await github.rest.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: prInfo.title,
