@@ -22,6 +22,13 @@ const create = await okto.rest.pulls.create({
   head: "target",
 });
 
+const updatePR = await okto.rest.pulls.update({
+  owner: context.repo.owner,
+  repo: context.repo.repo,
+  title: "title",
+  body: "amazing",
+});
+
 const modifyLabel = await okto.rest.issues.setLabels({
   owner: context.repo.owner,
   repo: context.repo.repo,
