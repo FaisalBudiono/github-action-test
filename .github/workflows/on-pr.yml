@@ -41,18 +41,22 @@ jobs:
         with:
           retries: 3
           script: |
-            const prInfo = ${{ steps.pr-info.outputs.result }}
+            try {
+              const prInfo = ${{ steps.pr-info.outputs.result }}
 
-            const res = await github.rest.pulls.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: prInfo.title,
-              body: prInfo.body,
-              base: "auto-pr/staging",
-              head: prInfo.head,
-            });
+              const res = await github.rest.pulls.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: prInfo.title,
+                body: prInfo.body,
+                base: "auto-pr/staging",
+                head: prInfo.head,
+              });
 
-            return res
+              return res
+            } catch (e) {
+              return e
+            }
       - run: |
           cat > script.txt<< EOF
           ${{ fromJSON(toJSON(steps.bawah.outputs.result)) }}
