@@ -17,3 +17,6 @@ jobs:
 
       - name: github.ref
         run: echo ${{ github.ref }}
+
+      - name: github.base_ref
+        run: echo ${{ github.base_ref }}
