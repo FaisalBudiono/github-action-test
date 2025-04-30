@@ -9,11 +9,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: 8BitJonny/gh-get-current-pr@3.0.0
-        id: PR
-
-      - name: "Pull Request ${{ steps.PR.outputs.number }}"
-        if: steps.PR.outputs.pr_found == 'true'
-        run: |
-          echo "from ${{ fromJSON(steps.PR.outputs.pr).head.ref }}"
-          echo "to ${{ fromJSON(steps.PR.outputs.pr).base.ref }}"
+      - run: |
+          cat > something.txt<< EOF
+          ${{ toJSON(github.event) }}
+          EOF
+      - run: cat something.txt
