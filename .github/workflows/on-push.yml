@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          cat > something.txt<< EOF ${{ toJSON(github.event) }}
+          cat > something.txt<< EOF 
+          ${{ toJSON(github.event) }}
           EOF
       - run: cat something.txt
