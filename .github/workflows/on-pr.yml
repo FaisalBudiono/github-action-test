@@ -28,6 +28,6 @@ jobs:
             })
       - run: |
           cat > script.txt<< EOF
-          ${{ toJSON(steps.my-script.outputs.result) }}
+          ${{ fromJSON(toJSON(steps.my-script.outputs.result)) }}
           EOF
       - run: cat script.txt
