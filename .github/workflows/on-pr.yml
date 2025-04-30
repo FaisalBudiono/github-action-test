@@ -56,20 +56,31 @@ jobs:
                 base: "auto-pr/staging",
               });
 
-              if (stagingPRs.data.length > 0) {
-                return stagingPRs.data[0].number
+              const body = `${prInfo.body}\n\n---\n\nTest for: #${prInfo.number}`
+
+              if (stagingPRs.data.length === 0) {
+                const createdPR = await github.rest.pulls.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: prInfo.title,
+                  base: "auto-pr/staging",
+                  head: prInfo.head,
+                  body,
+                });
+
+                return createdPR.data.number
               }
 
-              const createdPR = await github.rest.pulls.create({
+              const prNumber = stagingPRs.data[0].number
+
+              await github.rest.pulls.update({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 title: prInfo.title,
-                body: `${prInfo.body}\n\n---\n\nTest for: #${prInfo.number}`,
-                base: "auto-pr/staging",
-                head: prInfo.head,
+                body,
               });
 
-              return createdPR.data.number
+              return prNumber
             }
 
             const labels = ["bug", ...prInfo.labels]
