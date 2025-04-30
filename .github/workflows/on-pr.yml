@@ -47,17 +47,43 @@ jobs:
           script: |
             const prInfo = ${{ steps.pr-info.outputs.result }}
 
-            const res = await github.rest.pulls.list({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: "open",
-              head: prInfo.head,
-              base: "auto-pr/staging",
-            });
+            const insertOrUpdate = async () => {
+              const stagingPRs = await github.rest.pulls.list({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: "open",
+                head: prInfo.head,
+                base: "auto-pr/staging",
+              });
+
+              if (stagingPRs.data.length > 0) {
+                return stagingPRs.data[0].number
+              }
+
+              const createdPR = await github.rest.pulls.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: prInfo.title,
+                body: `${prInfo.body}\n\n---\n\nTest for: #${prInfo.number}`,
+                base: "auto-pr/staging",
+                head: prInfo.head,
+              });
+
+              return createdPR.data.number
+            }
 
             const labels = ["bug", ...prInfo.labels]
 
-            return {res}
+            const prNumber = await insertOrUpdate()
+
+            const resLabel = await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              labels,
+            });
+
+            return {resLabel}
       - run: |
           cat > script.txt<< EOF
           ${{ fromJSON(toJSON(steps.create-stg.outputs.result)) }}
