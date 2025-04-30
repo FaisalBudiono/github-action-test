@@ -22,6 +22,7 @@ jobs:
             })
 
             return {
+              number: res.data.number,
               title: res.data.title,
               body: res.data.body,
               head: res.data.head.ref,
@@ -47,7 +48,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: prInfo.title,
-              body: prInfo.body,
+              body: `${prInfo.body}\n\n---\n\nTest for:#${prInfo.number}`,
               base: "auto-pr/staging",
               head: prInfo.head,
             });
