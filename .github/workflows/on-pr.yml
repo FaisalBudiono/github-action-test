@@ -13,13 +13,13 @@ jobs:
         id: pr-info
         with:
           # result-encoding: string
-          retries: 3
           script: |
             const res = await github.rest.pulls.get({
               pull_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
             })
+            const labels = parent.data.labels.map((l) => l.name).filter((l) => l === 'invalid')
 
             return {
               number: res.data.number,
@@ -28,6 +28,7 @@ jobs:
               head: res.data.head.ref,
               base: res.data.base.ref,
               etc: res,
+              labels,
             }
       - run: |
           cat > script.txt<< EOF
@@ -43,7 +44,6 @@ jobs:
         id: create-stg
         continue-on-error: true
         with:
-          retries: 3
           script: |
             const prInfo = ${{ steps.pr-info.outputs.result }}
 
@@ -51,12 +51,21 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: prInfo.title,
-              body: `${prInfo.body}\n\n---\n\nTest for:#${prInfo.number}`,
+              body: `${prInfo.body}\n\n---\n\nTest for: #${prInfo.number}`,
               base: "auto-pr/staging",
               head: prInfo.head,
             });
 
-            return res
+            const labels = ["bug", ...prInfo.labels]
+
+            const resLabel = await okto.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: res.data.number,
+              labels: prInfo.labels,
+            });
+
+            return {res, resLabel}
       - run: |
           cat > script.txt<< EOF
           ${{ fromJSON(toJSON(steps.create-stg.outputs.result)) }}
@@ -71,7 +80,6 @@ jobs:
       #   id: update-stg
       #   continue-on-error: true
       #   with:
-      #     retries: 3
       #     script: |
       #       const prInfo = ${{ steps.pr-info.outputs.result }}
       #
@@ -79,7 +87,7 @@ jobs:
       #         owner: context.repo.owner,
       #         repo: context.repo.repo,
       #         title: prInfo.title,
-      #         body: `${prInfo.body}\n\n---\n\nTest for:#${prInfo.number}`,
+      #         body: `${prInfo.body}\n\n---\n\nTest for: #${prInfo.number}`,
       #         base: "auto-pr/staging",
       #         head: prInfo.head,
       #       });
