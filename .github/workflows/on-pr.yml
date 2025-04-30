@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          cat > something.txt<< EOF
+          cat > event.txt<< EOF
           ${{ toJSON(github.event) }}
           EOF
-      - run: cat something.txt
+      - run: cat event.txt
       - run: echo ${{ github.event.number }}
       - uses: actions/github-script@v7
         id: my-script
@@ -26,3 +26,8 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
             })
+      - run: |
+          cat > script.txt<< EOF
+          ${{ toJSON(steps.my-script.outputs.result ) }}
+          EOF
+      - run: cat script.txt
