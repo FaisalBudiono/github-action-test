@@ -10,3 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo ${{ github.event_name }}
+
+      - name: Only when pull_request
+        if: ${{ github.event_name }} == "pull_request"
+        run: echo ${{ github.ref_name }}
+
+      - name: github.ref
+        run: echo ${{ github.ref }}
