@@ -2,8 +2,8 @@ name: Auto PR on PR
 
 on:
   pull_request:
-    branches: 
-     - auto-pr/master
+    branches:
+      - auto-pr/master
 
 jobs:
   build:
@@ -40,7 +40,7 @@ jobs:
           retries: 3
           script: |
             return {
-              asd: context.number
+              asd: "${{ steps.pr-info.outputs.result }}",
             }
       - run: |
           cat > script.txt<< EOF
