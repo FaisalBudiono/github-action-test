@@ -21,7 +21,7 @@ jobs:
           # result-encoding: string
           retries: 3
           script: |
-            const kuda = github.rest.issues.get({
+            const kuda = await github.rest.issues.get({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
