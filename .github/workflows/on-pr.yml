@@ -87,7 +87,7 @@ jobs:
 
             const prNumber = await insertOrUpdate()
 
-            const resLabel = await github.rest.issues.addLabels({
+            const resLabel = await github.rest.issues.setLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: prNumber,
