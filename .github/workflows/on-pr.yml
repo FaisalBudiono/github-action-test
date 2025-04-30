@@ -48,7 +48,7 @@ jobs:
               repo: context.repo.repo,
               title: prInfo.title,
               body: prInfo.body,
-              base: prInfo.base,
+              base: "auto-pr/staging",
               head: prInfo.head,
             });
 
