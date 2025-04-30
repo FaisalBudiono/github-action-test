@@ -1,3 +1,3 @@
 # My Github Playground Repository for Learning Github Actions
 
-triggering
+riggering
