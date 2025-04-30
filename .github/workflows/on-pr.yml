@@ -21,13 +21,15 @@ jobs:
           # result-encoding: string
           retries: 3
           script: |
-            return github.rest.issues.get({
+            const kuda = github.rest.issues.get({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
             })
+
+            return kuda.data
       - run: |
           cat > script.txt<< EOF
-          ${{ fromJSON(toJSON(steps.my-script.outputs.result.data)) }}
+          ${{ fromJSON(toJSON(steps.my-script.outputs.result)) }}
           EOF
       - run: cat script.txt
