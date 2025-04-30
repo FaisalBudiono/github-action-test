@@ -55,23 +55,7 @@ jobs:
               base: "auto-pr/staging",
             });
 
-            # const res = await github.rest.pulls.create({
-            #   owner: context.repo.owner,
-            #   repo: context.repo.repo,
-            #   title: prInfo.title,
-            #   body: `${prInfo.body}\n\n---\n\nTest for: #${prInfo.number}`,
-            #   base: "auto-pr/staging",
-            #   head: prInfo.head,
-            # });
-
             const labels = ["bug", ...prInfo.labels]
-
-            # const resLabel = await github.rest.issues.addLabels({
-            #   owner: context.repo.owner,
-            #   repo: context.repo.repo,
-            #   issue_number: res.data.number,
-            #   labels,
-            # });
 
             return {res}
       - run: |
