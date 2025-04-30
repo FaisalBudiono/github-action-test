@@ -31,3 +31,4 @@ jobs:
           ${{ fromJSON(toJSON(steps.my-script.outputs.result)) }}
           EOF
       - run: cat script.txt
+      - run: echo ${{ toJSON(steps.my-script.outputs.result).data.body }}
