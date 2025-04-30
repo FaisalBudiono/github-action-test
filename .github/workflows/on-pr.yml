@@ -73,7 +73,7 @@ jobs:
             #   labels,
             # });
 
-            return {res, resLabel}
+            return {res}
       - run: |
           cat > script.txt<< EOF
           ${{ fromJSON(toJSON(steps.create-stg.outputs.result)) }}
