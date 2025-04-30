@@ -39,7 +39,9 @@ jobs:
         with:
           retries: 3
           script: |
-            return context
+            return {
+              asd: context.number
+            }
       - run: |
           cat > script.txt<< EOF
           ${{ fromJSON(toJSON(steps.bawah.outputs.result)) }}
