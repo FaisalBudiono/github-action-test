@@ -15,17 +15,13 @@ jobs:
           # result-encoding: string
           retries: 3
           script: |
-            const resIssue = await github.rest.issues.get({
+            const resIssue = await github.rest.pulls.get({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
             })
 
-            return {
-              body: resIssue.data.body,
-              title: resIssue.data.title,
-              etc: resIssue,
-            }
+            return resIssue
       - run: |
           cat > script.txt<< EOF
           ${{ fromJSON(toJSON(steps.pr-info.outputs.result)) }}
@@ -35,18 +31,18 @@ jobs:
       #     echo ${{ fromJSON(steps.pr-info.outputs.result).body }}
       #     echo ${{ fromJSON(steps.pr-info.outputs.result).title }}
 
-      - uses: actions/github-script@v7
-        id: bawah
-        with:
-          retries: 3
-          script: |
-            const kuda = ${{ steps.pr-info.outputs.result }}
-
-            return {
-              asd: kuda,
-            }
-      - run: |
-          cat > script.txt<< EOF
-          ${{ fromJSON(steps.bawah.outputs.result).asd.body }}
-          EOF
-      - run: cat script.txt
+      # - uses: actions/github-script@v7
+      #   id: bawah
+      #   with:
+      #     retries: 3
+      #     script: |
+      #       const kuda = ${{ steps.pr-info.outputs.result }}
+      #
+      #       return {
+      #         asd: kuda,
+      #       }
+      # - run: |
+      #     cat > script.txt<< EOF
+      #     ${{ fromJSON(steps.bawah.outputs.result).asd.body }}
+      #     EOF
+      # - run: cat script.txt
