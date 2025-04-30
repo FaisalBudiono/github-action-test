@@ -58,7 +58,7 @@ jobs:
 
             const labels = ["bug", ...prInfo.labels]
 
-            const resLabel = await okto.rest.issues.addLabels({
+            const resLabel = await github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: res.data.number,
