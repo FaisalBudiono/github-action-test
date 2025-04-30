@@ -19,7 +19,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
             })
-            const labels = parent.data.labels.map((l) => l.name).filter((l) => l === 'invalid')
+            const labels = res.data.labels.map((l) => l.name).filter((l) => l === 'invalid')
 
             return {
               number: res.data.number,
