@@ -32,7 +32,9 @@ jobs:
               title: res.data.title,
               body: res.data.body,
               head: res.data.head.ref,
+              headLabel: res.data.head.label,
               base: res.data.base.ref,
+              baseLabel: res.data.base.label,
               etc: res,
               labels,
             }
@@ -57,7 +59,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 state: "open",
-                head: prInfo.head,
+                head: prInfo.headLabel,
                 base: "${{ env.AUTO_PR_BRANCH }}",
               });
 
